@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, BehaviorSubject } from 'rxjs';
+import { Observable, from, of, BehaviorSubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import * as platformClient from 'purecloud-platform-client-v2';
 
@@ -31,5 +32,27 @@ export class GenesysCloudService {
   // TODO: Add check if isAuhorized
   getUserDetails(): Observable<platformClient.Models.UserMe> {
     return from(this.usersApi.getUsersMe());
+  }
+
+  searchUsers(term: string): Observable<platformClient.Models.User[]> {
+    if(!term.trim()){
+      return of([]);
+    }
+
+    let searchBody = {
+      sortOrder: 'SCORE',
+      pageSize: 25,
+      pageNumber: 1,
+      expand: [],
+      query: [{
+        type: 'TERM',
+        fields: ['name', 'email'],
+        value: term,
+        operator: 'AND'
+      }]
+    };
+
+    return from(this.usersApi.postUsersSearch(searchBody))
+      .pipe(map(data => data.results || []));
   }
 }

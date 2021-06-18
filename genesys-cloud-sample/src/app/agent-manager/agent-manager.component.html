@@ -1,1 +1,17 @@
-<p>agent-manager works!</p>
+<h2>Agent Manager</h2>
+
+<div>
+  <label for="search-box">User Search: </label>
+  <input #searchBox id="search-box" (input)="searchUser(searchBox.value)" />
+
+  <div *ngIf="fetching">
+    loading
+  </div>
+
+  <ul class="search-result">
+    <li *ngFor="let user of users$ | async">
+      {{user.name}}
+    </li>
+  </ul>
+</div>
+  

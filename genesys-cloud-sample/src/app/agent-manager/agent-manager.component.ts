@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, Subject, merge } from 'rxjs';
+import { debounceTime, distinctUntilChanged, mapTo, switchMap, tap } from 'rxjs/operators';
+import { GenesysCloudService } from '../genesys-cloud.service';
+
+import * as platformClient from 'purecloud-platform-client-v2';
 
 @Component({
   selector: 'app-agent-manager',
@@ -6,10 +11,30 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./agent-manager.component.css']
 })
 export class AgentManagerComponent implements OnInit {
+  private searchTerm = new Subject<string>();
+  users$!: Observable<platformClient.Models.User[]>
+  fetching = false;
 
-  constructor() { }
+  constructor(private genesysCloudService: GenesysCloudService) { }
 
   ngOnInit(): void {
+    this.users$ = this.searchTerm.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      tap(() => { this.fetching = true }),
+      switchMap((term: string) => this.genesysCloudService.searchUsers(term)),
+      tap(() => { this.fetching = false })
+    );
+
+    // let term$ = this.searchTerm.pipe(
+    //   debounceTime(300),
+    //   distinctUntilChanged()
+    // );
+
+    // this.fetching$ = term$.pipe(mapTo);
   }
 
+  searchUser(term: string): void {
+    this.searchTerm.next(term);
+  }
 }
