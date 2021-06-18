@@ -1,1 +1,15 @@
-<p>hello</p>
+<h2>User Details</h2>
+
+<div *ngIf="userDetails; else userDetailsUnavailable">
+  <img [src]="userAvatar">
+
+  <div>Id: {{userDetails.id}}</div>
+  <div>Name: {{userDetails.name}}</div>
+  <div>Email: {{userDetails.email}}</div>
+  <div>Title: {{userDetails.title || 'N/A'}}</div>
+</div>
+
+
+<ng-template #userDetailsUnavailable>
+  <p>Loading...</p>
+</ng-template>

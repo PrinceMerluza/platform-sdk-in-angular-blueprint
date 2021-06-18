@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  GENESYS_CLOUD_CLIENT_ID: 'e7de8a75-62bb-43eb-9063-38509f8c21af',
+  REDIRECT_URI: 'http://localhost:4200'
 };
 
 /*
