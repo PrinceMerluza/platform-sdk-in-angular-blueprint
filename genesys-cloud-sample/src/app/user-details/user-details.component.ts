@@ -9,7 +9,7 @@ import * as platformClient from 'purecloud-platform-client-v2';
 })
 export class UserDetailsComponent implements OnInit {
   userDetails?: platformClient.Models.UserMe;
-  userAvatar?: string;
+  userAvatar?: string; // TODO: Default userAvatar 
 
   constructor(private genesysCloudService: GenesysCloudService) {
   }
