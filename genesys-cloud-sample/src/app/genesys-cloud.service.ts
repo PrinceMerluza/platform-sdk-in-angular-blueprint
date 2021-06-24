@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of, BehaviorSubject } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { Observable, from, of, BehaviorSubject, queue } from 'rxjs';
+import { catchError, defaultIfEmpty, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import * as platformClient from 'purecloud-platform-client-v2';
@@ -70,7 +70,7 @@ export class GenesysCloudService {
             .pipe(map(data => data.entities || []));
   }
 
-  getQueueObservations(queueId: string): Observable<platformClient.Models.QueueObservationDataContainer|void>{
+  getQueueObservations(queueId: string): Observable<platformClient.Models.QueueObservationDataContainer>{
     return from(this.analyticsApi.postAnalyticsQueuesObservationsQuery({
       filter: {
         type: 'or',
@@ -85,7 +85,13 @@ export class GenesysCloudService {
        },
        metrics: [ 'oOnQueueUsers', 'oActiveUsers' ]
     }))
-    .pipe(map(data => data.results?.find(r => r.group?.queueId === queueId)) 
+    .pipe(
+      map(data => {
+        const result = data.results?.find(r => r.group?.queueId === queueId); 
+        if(!result) throw new Error(`No results queried for ${queueId}`);
+
+        return result;
+      }),
     );
   }
 

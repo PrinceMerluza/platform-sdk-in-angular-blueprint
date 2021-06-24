@@ -8,6 +8,7 @@ import { UserDetailsComponent } from './user-details/user-details.component';
 import { AgentManagerComponent } from './agent-manager/agent-manager.component';
 import { UserListEntryComponent } from './user-list-entry/user-list-entry.component';
 import { HomeComponent } from './home/home.component';
+import { QueueDetailsComponent } from './queue-details/queue-details.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { HomeComponent } from './home/home.component';
     UserDetailsComponent,
     AgentManagerComponent,
     UserListEntryComponent,
-    HomeComponent
+    HomeComponent,
+    QueueDetailsComponent
   ],
   imports: [
     BrowserModule,

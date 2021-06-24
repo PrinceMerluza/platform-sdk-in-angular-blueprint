@@ -10,9 +10,7 @@
 
   <div *ngIf="userQueues">
     <h3>Queues</h3>
-    <div *ngFor="let queue of userQueues">
-      {{queue.name}}
-    </div>
+    <app-queue-details *ngFor="let queue of userQueues" [queue]=queue></app-queue-details>
   </div>
 </div>
 
