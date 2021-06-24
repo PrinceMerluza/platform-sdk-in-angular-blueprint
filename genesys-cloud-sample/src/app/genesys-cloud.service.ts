@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, from, of, BehaviorSubject } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import * as platformClient from 'purecloud-platform-client-v2';
@@ -12,6 +12,8 @@ export class GenesysCloudService {
   private client = platformClient.ApiClient.instance;
   private usersApi = new platformClient.UsersApi();
   private presenceApi = new platformClient.PresenceApi();
+  private routingApi = new platformClient.RoutingApi();
+  private analyticsApi = new platformClient.AnalyticsApi();
 
   language: string = 'en-us';
   environment: string = 'mypurecloud.com';
@@ -19,6 +21,7 @@ export class GenesysCloudService {
 
   isAuthorized = new BehaviorSubject<boolean>(false);
   presenceDefinitions: platformClient.Models.OrganizationPresence[] = [];
+  lastSearchedTerm = '';
 
   constructor(private http: HttpClient) {}
 
@@ -35,7 +38,7 @@ export class GenesysCloudService {
   }
 
   initialize(language: string|null, environment: string|null): Promise<void> {
-    // this.client.setPersistSettings(true);
+    this.client.setPersistSettings(true);
     if(environment) this.client.setEnvironment(environment);
 
     return this.loginImplicitGrant()
@@ -60,6 +63,30 @@ export class GenesysCloudService {
     return from(this.usersApi.getUsersMe({ 
         expand: ['routingStatus', 'presence'],
       }));
+  }
+
+  getUserQueues(userId: string): Observable<platformClient.Models.UserQueue[]> {
+    return from(this.routingApi.getUserQueues(userId, { joined: true }))
+            .pipe(map(data => data.entities || []));
+  }
+
+  getQueueObservations(queueId: string): Observable<platformClient.Models.QueueObservationDataContainer|void>{
+    return from(this.analyticsApi.postAnalyticsQueuesObservationsQuery({
+      filter: {
+        type: 'or',
+        predicates: [
+         {
+          type: 'dimension',
+          dimension: 'queueId',
+          operator: 'matches',
+          value: queueId
+         }
+        ]
+       },
+       metrics: [ 'oOnQueueUsers', 'oActiveUsers' ]
+    }))
+    .pipe(map(data => data.results?.find(r => r.group?.queueId === queueId)) 
+    );
   }
 
   setUserPresence(userId: string, presenceId: string): Observable<platformClient.Models.UserPresence> {
@@ -96,6 +123,8 @@ export class GenesysCloudService {
         operator: 'AND'
       }]
     };
+
+    this.lastSearchedTerm = term
 
     return from(this.usersApi.postUsersSearch(searchBody))
       .pipe(map(data => data.results || []));

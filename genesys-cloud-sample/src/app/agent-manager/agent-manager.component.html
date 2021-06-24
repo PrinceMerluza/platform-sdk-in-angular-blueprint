@@ -2,7 +2,10 @@
 
 <div>
   <label for="search-box">User Search: </label>
-  <input #searchBox id="search-box" (input)="searchUser(searchBox.value)" />
+  <input #searchBox 
+    id="search-box" 
+    (input)="searchUser(searchBox.value)" 
+  />
 
   <div *ngIf="fetching">
     loading

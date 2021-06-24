@@ -10,7 +10,9 @@ import * as platformClient from 'purecloud-platform-client-v2';
   styleUrls: ['./user-details.component.css']
 })
 export class UserDetailsComponent implements OnInit {
+  userId?: string|null;
   userDetails?: platformClient.Models.UserMe;
+  userQueues?: platformClient.Models.UserQueue[];
   userAvatar?: string;
 
   constructor(
@@ -20,18 +22,29 @@ export class UserDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-   this.getUserDetails();
+    this.userId = this.route.snapshot.paramMap.get('id');
+  
+    this.getUserDetails();
+    this.getUserQueues();
   }
 
   getUserDetails(){
-    const id = this.route.snapshot.paramMap.get('id');
-    if(!id) return;
-    
-    this.genesysCloudService.getUserDetails(id)
+    if(!this.userId) throw Error('Invalid userID.');
+
+    this.genesysCloudService.getUserDetails(this.userId)
       .subscribe(userDetails => {
         this.userDetails = userDetails
         this.userAvatar = userDetails.images?.[userDetails.images.length - 1]
                           .imageUri;
+      });
+  }
+
+  getUserQueues(){
+    if(!this.userId) throw Error('Invalid userID.');
+
+    this.genesysCloudService.getUserQueues(this.userId)
+      .subscribe(userQueues => {
+        this.userQueues = userQueues;
       });
   }
 }

@@ -7,8 +7,14 @@
   <div>Name: {{userDetails.name}}</div>
   <div>Email: {{userDetails.email}}</div>
   <div>Title: {{userDetails.title || 'N/A'}}</div>
-</div>
 
+  <div *ngIf="userQueues">
+    <h3>Queues</h3>
+    <div *ngFor="let queue of userQueues">
+      {{queue.name}}
+    </div>
+  </div>
+</div>
 
 <ng-template #userDetailsUnavailable>
   <p>Loading...</p>

@@ -25,7 +25,6 @@ export class AgentManagerComponent implements OnInit {
       switchMap((term: string) => this.genesysCloudService.searchUsers(term)),
       tap(() => { this.fetching = false })
     );
-
     // let term$ = this.searchTerm.pipe(
     //   debounceTime(300),
     //   distinctUntilChanged()
