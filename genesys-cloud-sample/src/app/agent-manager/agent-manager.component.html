@@ -9,9 +9,9 @@
   </div>
 
   <ul class="search-result">
-    <li *ngFor="let user of users$ | async">
-      {{user.name}}
-    </li>
+    <div *ngFor="let user of users$ | async">
+      <app-user-list-entry [user]=user></app-user-list-entry>
+    </div>
   </ul>
 </div>
   

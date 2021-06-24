@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GenesysCloudService } from '../genesys-cloud.service';
+import { Location } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import * as platformClient from 'purecloud-platform-client-v2';
 
 @Component({
@@ -9,17 +11,23 @@ import * as platformClient from 'purecloud-platform-client-v2';
 })
 export class UserDetailsComponent implements OnInit {
   userDetails?: platformClient.Models.UserMe;
-  userAvatar?: string; // TODO: Default userAvatar 
+  userAvatar?: string;
 
-  constructor(private genesysCloudService: GenesysCloudService) {
-  }
+  constructor(
+    private route: ActivatedRoute,
+    private location: Location,
+    private genesysCloudService: GenesysCloudService,
+  ) { }
 
   ngOnInit(): void {
    this.getUserDetails();
   }
 
   getUserDetails(){
-    this.genesysCloudService.getUserDetails()
+    const id = this.route.snapshot.paramMap.get('id');
+    if(!id) return;
+    
+    this.genesysCloudService.getUserDetails(id)
       .subscribe(userDetails => {
         this.userDetails = userDetails
         this.userAvatar = userDetails.images?.[userDetails.images.length - 1]
