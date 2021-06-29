@@ -9,6 +9,7 @@ import { AgentManagerComponent } from './agent-manager/agent-manager.component';
 import { UserListEntryComponent } from './user-list-entry/user-list-entry.component';
 import { HomeComponent } from './home/home.component';
 import { QueueDetailsComponent } from './queue-details/queue-details.component';
+import { PresencePickerComponent } from './presence-picker/presence-picker.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { QueueDetailsComponent } from './queue-details/queue-details.component';
     AgentManagerComponent,
     UserListEntryComponent,
     HomeComponent,
-    QueueDetailsComponent
+    QueueDetailsComponent,
+    PresencePickerComponent
   ],
   imports: [
     BrowserModule,

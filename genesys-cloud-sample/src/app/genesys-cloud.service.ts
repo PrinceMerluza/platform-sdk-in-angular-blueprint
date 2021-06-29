@@ -21,7 +21,7 @@ export class GenesysCloudService {
   accessToken = '';
 
   isAuthorized = new BehaviorSubject<boolean>(false);
-  presenceDefinitions: platformClient.Models.OrganizationPresence[] = [];
+  presenceDefinitions = new BehaviorSubject<platformClient.Models.OrganizationPresence[]>([]);
   offlinePresenceId = '';
   lastSearchedTerm = '';
 
@@ -44,19 +44,20 @@ export class GenesysCloudService {
     if(environment) this.client.setEnvironment(environment);
 
     return this.loginImplicitGrant()
-    .then(() => this.presenceApi.getPresencedefinitions())
-    .then(data => {
-      if(!data.entities) return;
+      .then(() => this.presenceApi.getPresencedefinitions())
+      .then(data => {
+        if(!data.entities) return;
 
-      // Get the ID of the Offline Presence
-      this.offlinePresenceId = data.entities
-              .find(p => p.systemPresence === 'Offline')!.id!;
+        // Get the ID of the Offline Presence
+        this.offlinePresenceId = data.entities
+                .find(p => p.systemPresence === 'Offline')!.id!;
 
-      // Get the list for the other presences
-      this.presenceDefinitions = data.entities
-          .filter(p => !(p.systemPresence === 'Offline' || p.systemPresence === 'Idle'));
-    })
-    .catch(e => console.error(e));
+        // Get the list for the other presences
+        this.presenceDefinitions.next(
+          data.entities.filter(p => !(p.systemPresence === 'Offline' || p.systemPresence === 'Idle'))
+        );
+      })
+      .catch(e => console.error(e));
   }
 
 
@@ -107,7 +108,7 @@ export class GenesysCloudService {
         userId, 
         { presenceDefinition: { id: presenceId } }
       ));
-  }
+  } 
 
   logoutUser(userId: string) {
     return forkJoin({

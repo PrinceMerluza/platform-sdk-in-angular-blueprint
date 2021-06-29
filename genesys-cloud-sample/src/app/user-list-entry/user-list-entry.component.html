@@ -1,29 +1,7 @@
 <div class="entry-container">
   <div *ngIf="user">
     <div>{{user.name}}</div>
-    <button (click)="goToAgentDetails(user.id!)">Agent Details</button>
-    <div 
-      *ngIf="user.presence?.presenceDefinition?.systemPresence !== 'Offline'; 
-      else userOffline"
-    >
-      <select 
-        name="presence" 
-        id="presence"
-        #presence
-        (change)="onPresenceChange(presence.value)"
-      >
-        <option 
-          *ngFor="let presence of presenceDefinitions"
-          [value]="presence.id"
-          [selected]="user.presence?.presenceDefinition?.id === presence.id"
-        >
-          {{presence.languageLabels[languageLabel]}}
-        </option>
-      </select>
-      <button (click)="logoutUser()">Log Out User</button>
-    </div>
-    <ng-template #userOffline>
-      Offline
-    </ng-template>
+    <button (click)="goToAgentDetails(user.id!)">Agent Details</button> 
+    <div><app-presence-picker [user]="user"></app-presence-picker></div>
   </div>
 </div>

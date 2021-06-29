@@ -1,5 +1,6 @@
 <div *ngIf="userDetails; else userDetailsUnavailable">
   <h2>Hi, {{userDetails.name}}!</h2>
+  <app-presence-picker [user]="userDetails"></app-presence-picker>
 
   <img [src]="userAvatar">
 
