@@ -3,6 +3,7 @@
     <input 
       type="text" #searchBox 
       id="search-box"
+      [value]="this.searchTerm.value"
       (input)="searchUser(searchBox.value)"
       placeholder="Name or Email..." />
   </form>

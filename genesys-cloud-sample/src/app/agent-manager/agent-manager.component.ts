@@ -11,7 +11,7 @@ import * as platformClient from 'purecloud-platform-client-v2';
   styleUrls: ['./agent-manager.component.css']
 })
 export class AgentManagerComponent implements OnInit {
-  private searchTerm = new BehaviorSubject<string>('');
+  searchTerm = new BehaviorSubject<string>('');
   users$!: Observable<platformClient.Models.User[]>
   fetching = false;
 
@@ -27,11 +27,13 @@ export class AgentManagerComponent implements OnInit {
       switchMap((term: string) => this.genesysCloudService.searchUsers(term)),
       tap(() => { this.fetching = false; })
     );
-
+      
+    // Set the last searched term
     this.searchTerm.subscribe(term => {
       if(term) this.genesysCloudService.lastSearchedTerm = term;
     });
     
+    // If there is a previoulsy searched term, display the results
     if(this.genesysCloudService.lastSearchedTerm){
       this.searchTerm.next(this.genesysCloudService.lastSearchedTerm);
     }
