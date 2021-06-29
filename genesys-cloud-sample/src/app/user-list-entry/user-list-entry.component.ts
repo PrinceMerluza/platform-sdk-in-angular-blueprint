@@ -12,7 +12,7 @@ export class UserListEntryComponent implements OnInit {
   @Input() user!: platformClient.Models.User;
 
   presenceDefinitions: platformClient.Models.OrganizationPresence[] = [];
-  languageLabel = 'en_US'; // TODO: Add support for other locale
+  languageLabel = 'en_US';
 
   constructor(
     private router: Router,

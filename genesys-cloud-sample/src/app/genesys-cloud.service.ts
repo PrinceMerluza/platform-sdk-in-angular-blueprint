@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of, BehaviorSubject, queue } from 'rxjs';
+import { Observable, from, of, BehaviorSubject, forkJoin } from 'rxjs';
 import { catchError, defaultIfEmpty, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
@@ -14,6 +14,7 @@ export class GenesysCloudService {
   private presenceApi = new platformClient.PresenceApi();
   private routingApi = new platformClient.RoutingApi();
   private analyticsApi = new platformClient.AnalyticsApi();
+  private tokensApi = new platformClient.TokensApi();
 
   language: string = 'en-us';
   environment: string = 'mypurecloud.com';
@@ -21,6 +22,7 @@ export class GenesysCloudService {
 
   isAuthorized = new BehaviorSubject<boolean>(false);
   presenceDefinitions: platformClient.Models.OrganizationPresence[] = [];
+  offlinePresenceId = '';
   lastSearchedTerm = '';
 
   constructor(private http: HttpClient) {}
@@ -46,13 +48,18 @@ export class GenesysCloudService {
     .then(data => {
       if(!data.entities) return;
 
+      // Get the ID of the Offline Presence
+      this.offlinePresenceId = data.entities
+              .find(p => p.systemPresence === 'Offline')!.id!;
+
+      // Get the list for the other presences
       this.presenceDefinitions = data.entities
           .filter(p => !(p.systemPresence === 'Offline' || p.systemPresence === 'Idle'));
     })
     .catch(e => console.error(e));
   }
 
-  // TODO: Add check if isAuhorized
+
   getUserDetails(id: string): Observable<platformClient.Models.User> {
     return from(this.usersApi.getUser(id, { 
         expand: ['routingStatus', 'presence'],
@@ -103,13 +110,21 @@ export class GenesysCloudService {
   }
 
   logoutUser(userId: string) {
-    return this.http.delete(
-      `https://api.${this.environment}/api/v2/apps/users/${userId}/logout`, {
-        headers: new HttpHeaders({
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json',
-        })
+    return forkJoin({
+        deletetoken: from(this.tokensApi.deleteToken(userId)),
+        setOffline: from(this.presenceApi.patchUserPresence(userId, 'PURECLOUD', {
+                        presenceDefinition: { id: this.offlinePresenceId }
+                    })),
       });
+    
+    
+    // return this.http.delete(
+    //   `https://api.${this.environment}/api/v2/apps/users/${userId}/logout`, {
+    //     headers: new HttpHeaders({
+    //       'Authorization': `Bearer ${this.accessToken}`,
+    //       'Content-Type': 'application/json',
+    //     })
+    //   });
   }
 
   searchUsers(term: string): Observable<platformClient.Models.User[]> {
@@ -129,8 +144,6 @@ export class GenesysCloudService {
         operator: 'AND'
       }]
     };
-
-    this.lastSearchedTerm = term
 
     return from(this.usersApi.postUsersSearch(searchBody))
       .pipe(map(data => data.results || []));

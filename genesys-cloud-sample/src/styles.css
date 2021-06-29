@@ -1,1 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  color: #555;
+  background-color: #eee;
+}
+
+div.spinner {
+  text-align: center;
+}
+
+div.spinner img {
+  width: 40px;
+  height: 40px;
+}

@@ -1,8 +1,14 @@
-<h2>User Details</h2>
-
 <div *ngIf="userDetails; else userDetailsUnavailable">
+  <h2>Hi, {{userDetails.name}}!</h2>
+
   <img [src]="userAvatar">
 
+  <div>
+    <p>This blueprint app shows how to use the Genesys Cloud SDK with Angular 12.</p>
+    <p>The app is authorized with Implicit Grant and uses the Genesys Cloud SDK to implement the following features: user searching and presence updating.</p>
+  </div>
+
+  <h3>Some Info about Yourself:</h3>
   <div>Id: {{userDetails.id}}</div>
   <div>Name: {{userDetails.name}}</div>
   <div>Email: {{userDetails.email}}</div>
@@ -11,5 +17,7 @@
 
 
 <ng-template #userDetailsUnavailable>
-  <p>Loading...</p>
+  <div class="spinner">
+    <img src="assets/loading.svg" alt="Loading..." srcset="">
+  </div>
 </ng-template>

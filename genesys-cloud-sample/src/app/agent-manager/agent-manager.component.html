@@ -1,14 +1,16 @@
-<h2>Agent Manager</h2>
-
 <div>
-  <label for="search-box">User Search: </label>
-  <input #searchBox 
-    id="search-box" 
-    (input)="searchUser(searchBox.value)" 
-  />
+  <form action="#" autocomplete="off">
+    <input 
+      type="text" #searchBox 
+      id="search-box"
+      (input)="searchUser(searchBox.value)"
+      placeholder="Name or Email..." />
+  </form>
 
   <div *ngIf="fetching">
-    loading
+    <div class="spinner">
+      <img src="assets/loading.svg" alt="Loading..." srcset="">
+    </div>
   </div>
 
   <ul class="search-result">
@@ -17,4 +19,3 @@
     </div>
   </ul>
 </div>
-  

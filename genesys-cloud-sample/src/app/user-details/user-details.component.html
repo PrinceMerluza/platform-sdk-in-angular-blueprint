@@ -1,3 +1,5 @@
+<button (click)="goBack()">Go Back</button>
+
 <h2>User Details</h2>
 
 <div *ngIf="userDetails; else userDetailsUnavailable">
@@ -15,5 +17,7 @@
 </div>
 
 <ng-template #userDetailsUnavailable>
-  <p>Loading...</p>
+  <div class="spinner">
+    <img src="assets/loading.svg" alt="Loading..." srcset="">
+  </div>
 </ng-template>

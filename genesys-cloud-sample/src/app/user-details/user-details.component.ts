@@ -47,4 +47,8 @@ export class UserDetailsComponent implements OnInit {
         this.userQueues = userQueues;
       });
   }
+
+  goBack(){
+    this.location.back();
+  }
 }

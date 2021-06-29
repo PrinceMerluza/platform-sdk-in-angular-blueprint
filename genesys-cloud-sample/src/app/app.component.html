@@ -1,13 +1,21 @@
-<h1>{{title}}</h1>
+<div class="header">
+  <h1>{{title}}</h1>
+</div>
 
-<nav>
-  <a routerLink="/home">Home</a>
-  <a routerLink="/agentmanager">Agent Manager</a>
+<nav id="main-nav">
+  <ul>
+    <li><a routerLink="/home">Home</a></li>
+    <li><a routerLink="/agentmanager">Search User</a></li>
+  </ul>
 </nav>
 
-<div *ngIf="isAuthorized; else notAuthorized">
-  <router-outlet></router-outlet>
-</div>
-<ng-template #notAuthorized>
-  <h2>Loading...</h2>
-</ng-template>
+<main>
+  <div *ngIf="isAuthorized; else notAuthorized">
+    <router-outlet></router-outlet>
+  </div>
+  <ng-template #notAuthorized>
+    <div class="spinner">
+      <img src="assets/loading.svg" alt="Loading..." srcset="">
+    </div>
+  </ng-template>
+</main>
