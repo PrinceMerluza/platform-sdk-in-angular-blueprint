@@ -14,9 +14,9 @@
     </div>
   </div>
 
-  <ul class="search-result">
+  <div class="search-result">
     <div *ngFor="let user of users$ | async">
       <app-user-list-entry [user]=user></app-user-list-entry>
     </div>
-  </ul>
+  </div>
 </div>

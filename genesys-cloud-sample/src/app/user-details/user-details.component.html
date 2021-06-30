@@ -1,17 +1,30 @@
-<button (click)="goBack()">Go Back</button>
-
-<h2>User Details</h2>
+<button class="btn-go-back" (click)="goBack()">
+  Go Back
+</button>
 
 <div *ngIf="userDetails; else userDetailsUnavailable">
-  <img [src]="userAvatar">
+  <h2>{{userDetails.name}}</h2>
 
-  <div>Id: {{userDetails.id}}</div>
-  <div>Name: {{userDetails.name}}</div>
-  <div>Email: {{userDetails.email}}</div>
-  <div>Title: {{userDetails.title || 'N/A'}}</div>
+  <div class="user-details">
+    <img class="user-avatar" [src]="userAvatar">
+
+    <div class="user-right-section">
+      <div class="user-properties">
+        <div>Id: {{userDetails.id}}</div>
+        <div>Email: {{userDetails.email}}</div>
+        <div>Title: {{userDetails.title || 'N/A'}}</div>
+      </div>
+
+      <app-presence-picker [user]="userDetails"></app-presence-picker>
+    </div>
+  </div>
+  
+  
+
+  <hr>
 
   <div *ngIf="userQueues">
-    <h3>Queues</h3>
+    <h3>Queues ({{userQueues.length}})</h3>
     <app-queue-details *ngFor="let queue of userQueues" [queue]=queue></app-queue-details>
   </div>
 </div>

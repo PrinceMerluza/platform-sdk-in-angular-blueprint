@@ -40,3 +40,12 @@ input[type=text] {
 input[type=text]:focus {
   border: 1.5px solid #555;
 }
+
+hr {
+  border-top: 1px solid #ddd;
+}
+
+.small {
+  color: #aaa;
+  font-size: 12px;
+}

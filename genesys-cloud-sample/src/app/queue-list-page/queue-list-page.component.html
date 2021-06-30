@@ -19,11 +19,7 @@
       class="queue-list-entry"
       *ngFor="let queue of queues$ | async"
     >
-      <app-queue-details [queue]="queue">
-        <button (click)="logoutAgents()">
-          Log Out All Agents
-        </button>
-      </app-queue-details>
+      <app-queue-details [queue]="queue"></app-queue-details>
     </div>
   </div>
 </div>

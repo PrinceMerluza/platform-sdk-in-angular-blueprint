@@ -1,4 +1,4 @@
-<div>
+<div class="container">
   <div 
     *ngIf="user.presence?.presenceDefinition?.systemPresence !== 'Offline';
     else userOffline"
@@ -16,9 +16,11 @@
         {{presence.languageLabels[languageLabel]}}
       </option>
     </select>
-    <button (click)="logoutUser()">Log Out User</button>
+    <button (click)="logoutUser()">Logout</button>
   </div>
   <ng-template #userOffline>
-    Offline
+    <div class="userOffline">
+      Offline
+    </div>
   </ng-template>
 </div>

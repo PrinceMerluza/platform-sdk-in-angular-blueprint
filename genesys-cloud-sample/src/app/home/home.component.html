@@ -1,15 +1,26 @@
 <div *ngIf="userDetails; else userDetailsUnavailable">
-  <h2>Hi, {{userDetails.name}}!</h2>
-  <app-presence-picker [user]="userDetails"></app-presence-picker>
-
-  <img [src]="userAvatar">
+  <div class="top-section">
+    <img class="user-avatar" [src]="userAvatar">
+    <h2 class="greeting">Hi, {{userDetails.name}}!</h2>
+    <app-presence-picker [user]="userDetails"></app-presence-picker>
+  </div>
+  
 
   <div>
     <p>This blueprint app shows how to use the Genesys Cloud SDK with Angular 12.</p>
-    <p>The app is authorized with Implicit Grant and uses the Genesys Cloud SDK to implement the following features: user searching and presence updating.</p>
+    <p>
+      The app uses Implicit Grant Authorization and the Genesys Cloud SDK to implement the following features:
+    </p>
+    <ul>
+      <li>User Searching</li>
+      <li>Presence Status Updating</li>
+      <li>Bulk Logout of Agents in a Queue</li>
+    </ul>
   </div>
 
-  <h3>Some Info about Yourself:</h3>
+  <hr>
+
+  <h4>Some Info about Yourself:</h4>
   <div>Id: {{userDetails.id}}</div>
   <div>Name: {{userDetails.name}}</div>
   <div>Email: {{userDetails.email}}</div>

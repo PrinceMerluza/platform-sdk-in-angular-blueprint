@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'Angular Sample App';
+  title = 'Yuri\'s Angular App';
   isAuthorized = false;
 
   constructor(

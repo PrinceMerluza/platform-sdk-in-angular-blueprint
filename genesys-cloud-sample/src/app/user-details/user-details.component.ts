@@ -13,7 +13,7 @@ export class UserDetailsComponent implements OnInit {
   userId?: string|null;
   userDetails?: platformClient.Models.UserMe;
   userQueues?: platformClient.Models.UserQueue[];
-  userAvatar?: string;
+  userAvatar: string = '/assets/default-face.png';
 
   constructor(
     private route: ActivatedRoute,
@@ -35,7 +35,7 @@ export class UserDetailsComponent implements OnInit {
       .subscribe(userDetails => {
         this.userDetails = userDetails
         this.userAvatar = userDetails.images?.[userDetails.images.length - 1]
-                          .imageUri;
+                          .imageUri || this.userAvatar;
       });
   }
 

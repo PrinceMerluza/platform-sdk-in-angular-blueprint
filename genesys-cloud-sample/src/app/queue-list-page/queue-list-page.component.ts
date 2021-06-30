@@ -41,8 +41,4 @@ export class QueueListPageComponent implements OnInit {
   searchQueue(term: string): void {
     this.searchTerm.next(term);
   }
-
-  logoutAgents(){
-
-  }
 }
