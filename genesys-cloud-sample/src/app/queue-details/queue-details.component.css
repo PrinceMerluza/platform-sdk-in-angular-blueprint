@@ -32,7 +32,12 @@ button.logout-agents {
 }
 
 
-button.logout-agents:hover{
+button.logout-agents:disabled {
+  cursor:default;
+}
+
+
+button.logout-agents:hover:not([disabled]){
   background-color: #ff8888;
   border-color: white;
   color: white;

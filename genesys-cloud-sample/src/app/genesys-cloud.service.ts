@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of, BehaviorSubject, forkJoin } from 'rxjs';
-import { catchError, defaultIfEmpty, map, tap } from 'rxjs/operators';
+import { Observable, from, of, BehaviorSubject, forkJoin, EMPTY } from 'rxjs';
+import { catchError, defaultIfEmpty, mergeMap, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import * as platformClient from 'purecloud-platform-client-v2';
@@ -115,13 +115,34 @@ export class GenesysCloudService {
       ));
   } 
 
-  logoutUser(userId: string) {
+  logoutUser(userId: string): Observable<any> {
     return forkJoin({
         deletetoken: from(this.tokensApi.deleteToken(userId)),
         setOffline: from(this.presenceApi.patchUserPresence(userId, 'PURECLOUD', {
                         presenceDefinition: { id: this.offlinePresenceId }
                     })),
       });
+  }
+
+  /**
+   * Logout users belonging to the queue. This includes agents that are not
+   * 'on-queue'. For this sample app, we'd just take the first 100 members.
+   * In order, to get ALL agents, paging of the results is needed.
+   * @param queueId The Genesys Cloud Queue Id
+   */
+  logoutUsersFromQueue(queueId: string): Observable<any> {
+    return from(this.routingApi.getRoutingQueueMembers(queueId))
+      .pipe(
+        mergeMap(result => {
+          if(!result.entities) return EMPTY;
+
+          const userLogoutArr = result.entities.map(user => this.logoutUser(user.id!));
+          const observables = Object.assign({}, (userLogoutArr));
+          console.log(observables)
+
+          return forkJoin(observables);
+        })
+      )
   }
 
   searchUsers(term: string): Observable<platformClient.Models.User[]> {

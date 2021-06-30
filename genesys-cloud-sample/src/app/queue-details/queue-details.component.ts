@@ -23,6 +23,7 @@ export class QueueDetailsComponent implements OnInit {
 
   getQueueObservations(){
     if(!this.queue) throw Error('Invalid queue.');
+    this.fetching = true;
 
     this.genesysCloudService.getQueueObservations(this.queue.id!)
       .subscribe(result => {
@@ -39,6 +40,13 @@ export class QueueDetailsComponent implements OnInit {
   }
 
   logoutAgents(){
+    if(!this.queue?.id) throw new Error('Empty queue');
+    this.fetching = true;
 
-  }
+    this.genesysCloudService.logoutUsersFromQueue(this.queue.id)
+      .subscribe(data => {
+        console.log(`Logged out all agents of ${this.queue?.name}`);
+        this.getQueueObservations();
+      });
+  } 
 }
