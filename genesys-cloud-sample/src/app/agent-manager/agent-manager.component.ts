@@ -30,12 +30,12 @@ export class AgentManagerComponent implements OnInit {
       
     // Set the last searched term
     this.searchTerm.subscribe(term => {
-      if(term) this.genesysCloudService.lastSearchedTerm = term;
+      if(term) this.genesysCloudService.lastUserSearchValue = term;
     });
     
     // If there is a previoulsy searched term, display the results
-    if(this.genesysCloudService.lastSearchedTerm){
-      this.searchTerm.next(this.genesysCloudService.lastSearchedTerm);
+    if(this.genesysCloudService.lastUserSearchValue){
+      this.searchTerm.next(this.genesysCloudService.lastUserSearchValue);
     }
   }
 

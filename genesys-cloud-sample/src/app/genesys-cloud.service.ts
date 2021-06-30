@@ -16,14 +16,19 @@ export class GenesysCloudService {
   private analyticsApi = new platformClient.AnalyticsApi();
   private tokensApi = new platformClient.TokensApi();
 
+  // Authorization values
   language: string = 'en-us';
   environment: string = 'mypurecloud.com';
   accessToken = '';
-
   isAuthorized = new BehaviorSubject<boolean>(false);
+
+  // Cache for presence definitions
   presenceDefinitions = new BehaviorSubject<platformClient.Models.OrganizationPresence[]>([]);
   offlinePresenceId = '';
-  lastSearchedTerm = '';
+
+  // Persist search values
+  lastUserSearchValue = '';
+  lastQueueSearchValue = '';
 
   constructor(private http: HttpClient) {}
 
@@ -117,15 +122,6 @@ export class GenesysCloudService {
                         presenceDefinition: { id: this.offlinePresenceId }
                     })),
       });
-    
-    
-    // return this.http.delete(
-    //   `https://api.${this.environment}/api/v2/apps/users/${userId}/logout`, {
-    //     headers: new HttpHeaders({
-    //       'Authorization': `Bearer ${this.accessToken}`,
-    //       'Content-Type': 'application/json',
-    //     })
-    //   });
   }
 
   searchUsers(term: string): Observable<platformClient.Models.User[]> {
@@ -148,5 +144,14 @@ export class GenesysCloudService {
 
     return from(this.usersApi.postUsersSearch(searchBody))
       .pipe(map(data => data.results || []));
+  }
+
+  searchQueues(term: string): Observable<platformClient.Models.Queue[]> {
+    return from(this.routingApi.getRoutingQueues({
+        pageSize: 10, name: `*${term}*`,
+      }))
+      .pipe(
+        map(data => data.entities || [])
+      );
   }
 }

@@ -10,6 +10,7 @@ import { UserListEntryComponent } from './user-list-entry/user-list-entry.compon
 import { HomeComponent } from './home/home.component';
 import { QueueDetailsComponent } from './queue-details/queue-details.component';
 import { PresencePickerComponent } from './presence-picker/presence-picker.component';
+import { QueueListPageComponent } from './queue-list-page/queue-list-page.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { PresencePickerComponent } from './presence-picker/presence-picker.compo
     UserListEntryComponent,
     HomeComponent,
     QueueDetailsComponent,
-    PresencePickerComponent
+    PresencePickerComponent,
+    QueueListPageComponent
   ],
   imports: [
     BrowserModule,

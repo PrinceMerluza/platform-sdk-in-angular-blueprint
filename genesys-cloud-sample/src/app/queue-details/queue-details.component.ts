@@ -31,7 +31,7 @@ export class QueueDetailsComponent implements OnInit {
                 .filter(d => d.metric === 'oOnQueueUsers')
                 .reduce((acc, d) => acc + d.stats!.count!, 0)
         this.totalAgents = result.data
-                .find(d => d.metric === 'oActiveUsers')!.stats!.count || 0;  
+                .find(d => d.metric === 'oActiveUsers')!.stats!.count || 0; 
       });
   }
 }
