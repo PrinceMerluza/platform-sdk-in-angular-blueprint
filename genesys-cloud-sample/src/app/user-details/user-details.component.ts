@@ -13,7 +13,7 @@ export class UserDetailsComponent implements OnInit {
   userId?: string|null;
   userDetails?: platformClient.Models.UserMe;
   userQueues?: platformClient.Models.UserQueue[];
-  userAvatar: string = '/assets/default-face.png';
+  userAvatar: string = 'assets/default-face.png';
 
   constructor(
     private route: ActivatedRoute,

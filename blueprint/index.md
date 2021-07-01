@@ -112,7 +112,7 @@ You can use an already existing project, though if you're using an earlier versi
             
         ```
 
-    2. The `serve` target will use the configuration from `build` so we'll ony have to update the `builder` property:
+    2. The `serve` target will use the `options` configuration from `build` so we'll ony have to update the `builder` property:
 
         ```json
         "serve": {
@@ -185,6 +185,7 @@ export class AppComponent implements OnInit {
 
 ## Overview of the Sample App's Features
 
+
 ### Genesys Cloud Service
 
 The `genesys-cloud` service contains all Genesys Cloud related functionality. All of the API methods returns a Promise, but if we want to work with Observables instead, we can easily convert them using the `from` operator.
@@ -211,4 +212,5 @@ The User Sarch page is where you can search for users within your org. You can c
 
 The Queues List is a searh page where you can see Observation Query details of each queue. You can also log out all of the agents on a particular queue. This is helpful if some agents are not able to log out of their stations after their shift is supposed to be done.
 
+## Additional Resources
 

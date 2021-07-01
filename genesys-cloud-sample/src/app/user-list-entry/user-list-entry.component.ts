@@ -9,7 +9,7 @@ import * as platformClient from 'purecloud-platform-client-v2';
 })
 export class UserListEntryComponent implements OnInit {
   @Input() user!: platformClient.Models.User;
-  userAvatar: string = '/assets/default-face.png';
+  userAvatar: string = 'assets/default-face.png';
 
   constructor(
     private router: Router,
