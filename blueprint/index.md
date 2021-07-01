@@ -6,14 +6,22 @@ icon: blueprint
 image: images/cover.png
 category: 6
 summary: |
-  This Genesys Cloud Developer Blueprint demonstrates how to setup your Angular project to include the Genesys Cloud Javascript Platform SDK. It will show the steps needed for configuring the SDK with Webpack, and also demonstrate an app that provides some supervisor functionalities like searching and setting the status of users.
+  This Genesys Cloud Developer Blueprint demonstrates how to setup your Angular project to include the Genesys Cloud Javascript Platform SDK. The sample app is a basic Angular project that uses the Genesys Cloud API for supervisor functionalities like searching and setting the status of users. The blueprint will also show the steps needed for configuring the SDK on a new or existing Angular project.
 ---
 
-This Genesys Cloud Developer Blueprint demonstrates how to setup your Angular project to include the Genesys Cloud Javascript SDK. It will show the steps needed for configuring the SDK with Webpack, and also demonstrate an app that provides some supervisor functionalities like searching and setting the status of users.
+This Genesys Cloud Developer Blueprint demonstrates how to setup your Angular project to include the Genesys Cloud Javascript Platform SDK. The sample app is a basic Angular project that uses the Genesys Cloud API for supervisor functionalities like searching and setting the status of users. The blueprint will also show the steps needed for configuring the SDK on a new or existing Angular project.
 
 :::primary
 **Note**: If you have an existing Angular project and only want to know how to configure Genesys Cloud SDK in your app, click [here](#configuring-the-angular-project-to-use-genesys-cloud-sdk) to jump to the section.
 :::
+
+<!-- no toc -->
+* [Solution Components](#solution-components "Goes to the Solutions Components section")
+* [Requirements](#requirements "Goes to the Requirements section")
+* [Implementation Steps](#implementation-steps "Goes to the Implementation steps section")
+* [Sample App Overview](#sample-app-overview "Overview of the sample app's features")
+* [Configuring the Angular Project to use Genesys Cloud SDK](#configuring-the-angular-project-to-use-genesys-cloud-sdk "Custom Webpack configuration for Angular")
+* [Additional resources](#additional-resources "Goes to the Additional resources section")
 
 ## Solution components
 
@@ -40,7 +48,101 @@ This solution requires a Genesys Cloud license. For more information on licensin
 
 A recommended Genesys Cloud role for the solutions engineer is Master Admin. For more information on Genesys Cloud roles and permissions, see the [Roles and permissions overview](https://help.mypurecloud.com/?p=24360 "Opens the Roles and permissions overview article").
 
-TODO: Deployment Steps Maybe a GH Page
+## Implementation Steps
+
+### Run the app hosted in Github Pages
+
+If you want to try the sample app first then you can go to the blueprint's [Github Pages](TODO:). You would need to already have a Genesys Cloud account for authorization.
+
+If you're on a different region than `us-east-1` (mypurecloud.com) then you'd need to add an `environment` query parameter to the URL and enter your Genesys Cloud [environment](https://developer.genesys.cloud/api/rest/). e.g.
+
+```bash
+https:// TODO: ?environment=mypurecloud.com.au
+```
+
+### Create an Implicit Grant Client
+
+The Implicit Grant Client allows your users to authorize the app with Genesys Cloud SDK. For steps on how to create an Implicit Grant Client, click [here](https://help.mypurecloud.com/articles/create-an-oauth-client/).
+
+For additional configuration you need to:
+
+1. Add your production URI the redirectURI section. For testing locally, you also need to add the local URI which by default is `http://localhost:4200/`.
+2. Add the following in the Scopes section:
+    * analytics
+    * authorization
+    * presence
+    * routing
+    * users
+
+### Running Locally
+
+Clone the [repo](TODO:) to your local machine:
+
+```bash
+git clone TODO:
+```
+
+Go to the Angular project directory `genesys-cloud-sample`
+
+```bash
+cd genesys-cloud-sample
+```
+
+Before running the project, you need to modify the values in the environment files. Inside the `src` directory should be the `environments` folder. If you have created an OAuth Client from the last step then you need to add these into the environment files:
+
+environment.prod.ts:
+
+```typescript
+export const environment = {
+  production: true,
+  GENESYS_CLOUD_CLIENT_ID: '<YOUR CLIENT ID HERE>',
+  REDIRECT_URI: '<YOUR PRODUCTION URI HERE>',
+};
+```
+
+environment.ts:
+
+```typescript
+export const environment = {
+  production: false,
+  GENESYS_CLOUD_CLIENT_ID: '<YOUR CLIENT ID HERE>',
+  REDIRECT_URI: 'http://localhost:4200',
+};
+```
+
+Serve the Angular app locally with the following command:
+
+```bash
+ng serve
+```
+
+## Sample App Overview
+
+### Genesys Cloud Service
+
+The `genesys-cloud` service contains all Genesys Cloud related functionality. All of the API methods returns a Promise, but if we want to work with Observables instead, we can easily convert them using the `from` operator.
+
+Example:
+
+```typescript
+  getUserDetails(id: string): Observable<platformClient.Models.User> {
+    return from(this.usersApi.getUser(id, { 
+        expand: ['routingStatus', 'presence'],
+      }));
+  }
+```
+
+### User Details
+
+The home page display information about the sample app and details about the current user. There's also a presence-picker component which allows the user to change their presence or routing status.
+
+### User Search
+
+The User Sarch page is where you can search for users within your org. You can change their presence or go to their User Page which simple contains some basic information about the user including .
+
+### Queues List
+
+The Queues List is a searh page where you can see Observation Query details of each queue. You can also log out all of the agents on a particular queue. This is helpful if some agents are not able to log out of their stations after their shift is supposed to be done.
 
 ## Configuring the Angular Project to use Genesys Cloud SDK
 
@@ -164,7 +266,7 @@ You can use an already existing project, though if you're using an earlier versi
 
 After following the step-by-step instructions, you should now be able to import and use the Platform Client in your code.
 
-Example: 
+Example:
 
 ```javascript
 import { Component, OnInit } from '@angular/core';
@@ -183,34 +285,9 @@ export class AppComponent implements OnInit {
 }
 ```
 
-## Overview of the Sample App's Features
-
-
-### Genesys Cloud Service
-
-The `genesys-cloud` service contains all Genesys Cloud related functionality. All of the API methods returns a Promise, but if we want to work with Observables instead, we can easily convert them using the `from` operator.
-
-Example:
-
-```typescript
-  getUserDetails(id: string): Observable<platformClient.Models.User> {
-    return from(this.usersApi.getUser(id, { 
-        expand: ['routingStatus', 'presence'],
-      }));
-  }
-```
-
-### User Details
-
-The home page display information about the sample app and details about the current user. There's also a presence-picker component which allows the user to change their presence or routing status.
-
-### User Search
-
-The User Sarch page is where you can search for users within your org. You can change their presence or go to their User Page which simple contains some basic information about the user including .
-
-### Queues List
-
-The Queues List is a searh page where you can see Observation Query details of each queue. You can also log out all of the agents on a particular queue. This is helpful if some agents are not able to log out of their stations after their shift is supposed to be done.
-
 ## Additional Resources
 
+* [Genesys Cloud Platform SDK - Javascript](https://developer.genesys.cloud/api/rest/client-libraries/javascript/)
+* [Angular Builders - Custom Webpack](https://www.npmjs.com/package/@angular-builders/custom-webpack)
+* [Github Repository](TODO:)
+* [Yuri's Angular App](TODO:)
