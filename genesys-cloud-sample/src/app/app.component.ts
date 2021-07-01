@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
     private route: ActivatedRoute,
   ){ }
 
-  async ngOnInit(){
+  ngOnInit(){
     const language = this.route.snapshot.queryParamMap.get('language');
     const environment = this.route.snapshot.queryParamMap.get('environment');
 
@@ -24,6 +24,9 @@ export class AppComponent implements OnInit {
       this.isAuthorized = isAuthorized;
     });
 
-    await this.genesysCloudService.initialize(language, environment);
+    this.genesysCloudService.initialize(language, environment)
+      .subscribe(() => { 
+        console.log('Succesfully logged in.')
+      });
   }
 }

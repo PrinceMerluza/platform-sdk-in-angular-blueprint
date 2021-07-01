@@ -49,3 +49,8 @@ hr {
   color: #aaa;
   font-size: 12px;
 }
+
+a {
+  text-decoration: none;
+  color: #5294e0;
+}

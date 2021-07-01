@@ -32,37 +32,38 @@ export class GenesysCloudService {
 
   constructor(private http: HttpClient) {}
 
-  private loginImplicitGrant(): Promise<void> {
-    return this.client.loginImplicitGrant(
-        environment.GENESYS_CLOUD_CLIENT_ID, 
-        environment.REDIRECT_URI)
-    .then(data => {
-      this.accessToken = data.accessToken;
-      this.isAuthorized.next(true);
-      console.log('User authorized.')
-    })
-    .catch(e => console.error(e));
+  private loginImplicitGrant(): Observable<platformClient.AuthData> {
+    return from(this.client.loginImplicitGrant(environment.GENESYS_CLOUD_CLIENT_ID, environment.REDIRECT_URI))
+            .pipe(
+              map(data => {
+                this.accessToken = data.accessToken;
+                this.isAuthorized.next(true);
+                console.log('User authorized.');
+
+                return data;
+              })
+            );
   }
 
-  initialize(language: string|null, environment: string|null): Promise<void> {
+  initialize(language: string|null, environment: string|null): Observable<any> {
     this.client.setPersistSettings(true);
     if(environment) this.client.setEnvironment(environment);
 
-    return this.loginImplicitGrant()
-      .then(() => this.presenceApi.getPresencedefinitions())
-      .then(data => {
-        if(!data.entities) return;
+    return this.loginImplicitGrant().pipe(
+              mergeMap(data => from(this.presenceApi.getPresencedefinitions())),
+              tap(data => {
+                if(!data.entities) return;
 
-        // Get the ID of the Offline Presence
-        this.offlinePresenceId = data.entities
-                .find(p => p.systemPresence === 'Offline')!.id!;
+                // Get the ID of the Offline Presence
+                this.offlinePresenceId = data.entities
+                        .find(p => p.systemPresence === 'Offline')!.id!;
 
-        // Get the list for the other presences
-        this.presenceDefinitions.next(
-          data.entities.filter(p => !(p.systemPresence === 'Offline' || p.systemPresence === 'Idle'))
-        );
-      })
-      .catch(e => console.error(e));
+                // Get the list for the other presences
+                this.presenceDefinitions.next(
+                  data.entities.filter(p => !(p.systemPresence === 'Offline' || p.systemPresence === 'Idle'))
+                );
+              }),
+            );
   }
 
 
