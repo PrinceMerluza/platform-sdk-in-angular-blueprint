@@ -1,2 +1,4 @@
-# platform-sdk-in-angular-blueprint
-A blueprint which shows how to use the Genesys Cloud Platform SDK in an Angular app.
+This repo is archived, the final blueprint can be found at:
+
+https://developer.genesys.cloud/blueprints/angular-app-with-genesys-cloud-sdk/
+https://github.com/GenesysCloudBlueprints/angular-app-with-genesys-cloud-sdk
